@@ -1,6 +1,8 @@
 const donateNowButtons = document.getElementsByClassName("btn-donate");
-
+const maxBalance = 5500; 
 let sum = 0; 
+
+
 for (let i = 0; i < donateNowButtons.length; i++) {
     donateNowButtons[i].addEventListener("click", function() {
 
@@ -8,8 +10,15 @@ for (let i = 0; i < donateNowButtons.length; i++) {
         let donationValue = parseFloat(donationInputFields[i].value); 
 
         //alert message
-        if (isNaN(donationValue) || donationValue <= 0) {
+        if (isNaN(donationValue) || donationValue <= 0 ) {
             alert("Please enter a valid donation amount.");
+            return;
+        }
+
+        //alert message 2
+        const remainingBalance = maxBalance - sum;
+        if (donationValue > remainingBalance) {
+            alert(`Your donation exceeds the available balance of ${remainingBalance.toFixed(2)} BDT. Please enter a smaller amount.`);
             return;
         }
 
@@ -24,7 +33,7 @@ for (let i = 0; i < donateNowButtons.length; i++) {
 
         sum = sum + donationValue;
         
-        const balanceValue = 5500 - sum;
+        const balanceValue = maxBalance - sum;
 
         const balance = document.getElementById("balance");
         balance.innerText = balanceValue + " BDT";
