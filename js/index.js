@@ -1,11 +1,34 @@
+function updateDonation(i, donationValue) {
+    const showedAmount = document.getElementsByClassName("showed-amount");
+    let currentAmountText = showedAmount[i].innerText;
+    let currentAmount = parseFloat(currentAmountText.replace(" BDT", "")); 
+
+    let newAmount = currentAmount + donationValue;
+    showedAmount[i].innerText = newAmount + " BDT";
+}
+
+
+function addToHistory(donationValue) {
+    const historyItem = document.createElement("div");
+    historyItem.className = "bg-white p-3 rounded-lg border-2 border-black-200 mb-3";
+    const timestamp = new Date().toLocaleString('en-BD', { timeZone: 'Asia/Dhaka' });
+
+    historyItem.innerHTML = `
+    <p class="mb-1 font-semibold text-xs text-gray-500">${donationValue.toFixed(2)} Taka is Donated for the disaster in Bangladesh</p>
+    <p class="p-1 font-medium bg-slate-100 rounded-md text-xs text-gray-500">Date: ${timestamp}</p>
+    `;
+
+    const historyContainer = document.getElementById("history-list");
+    historyContainer.appendChild(historyItem);
+}
+
+//shuru
 const donateNowButtons = document.getElementsByClassName("btn-donate");
 const maxBalance = 5500; 
 let sum = 0; 
 
-
 for (let i = 0; i < donateNowButtons.length; i++) {
     donateNowButtons[i].addEventListener("click", function() {
-
         const donationInputFields = document.getElementsByClassName("donation-amount");
         let donationValue = parseFloat(donationInputFields[i].value); 
 
@@ -22,46 +45,25 @@ for (let i = 0; i < donateNowButtons.length; i++) {
             return;
         }
 
-        const showedAmount = document.getElementsByClassName("showed-amount");
-
-        let currentAmountText = showedAmount[i].innerText;
-        let currentAmount = parseFloat(currentAmountText.replace(" BDT", "")); // Remove " BDT" and convert to number
-
-        let newAmount = currentAmount + donationValue;
-
-        showedAmount[i].innerText = newAmount + " BDT";
-
-        sum = sum + donationValue;
+        // Updating donation amount
+        updateDonation(i, donationValue);
+        sum += donationValue;
         
         const balanceValue = maxBalance - sum;
-
         const balance = document.getElementById("balance");
         balance.innerText = balanceValue + " BDT";
 
-        // HISTORY LIST
-        const historyItem = document.createElement("div");
-        historyItem.className = "bg-white p-3 rounded-lg border-2 border-black-200 mb-3";
-        const timestamp = new Date().toLocaleString('en-BD', { timeZone: 'Asia/Dhaka' });
+        addToHistory(donationValue);
 
-        historyItem.innerHTML = `
-        <p class="mb-1 font-semibold text-xs text-gray-500">${donationValue.toFixed(2)} Taka is Donated for the disaster in Bangladesh</p>
-        <p class="p-1 font-medium bg-slate-100 rounded-md text-xs text-gray-500">Date: ${timestamp}</p>
-        `;
-
-        const historyContainer = document.getElementById("history-list");
-        historyContainer.appendChild(historyItem); 
-
-        
-
-        //for clear
+        // Clear input
         donationInputFields[i].value = "";
 
-        //Congrats modal open
+
         document.getElementById("my_modal_7").checked = true;
-
-
     });
 }
+
+
 
 
 // HISTORY BUTTON
